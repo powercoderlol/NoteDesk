@@ -8,7 +8,6 @@ Author: coderlol
 Author URI: http://vk.com/coderlol
 */
 
-
 define('NOTEDESK_ABSPATH', plugin_dir_path(__FILE__) );
 
 
@@ -265,20 +264,22 @@ SUBPAGE 2 PREVIEW
 		global $wpdb;
 		$search_data = $_POST['coderlol_get_note'];
 		$table_notes = $wpdb->prefix . "coderlol_notes";
-		$result = mysql_query("SELECT id, title, content, color, fontSize, category, rotation, grad, gradColor, gradPosition FROM ".$table_notes." WHERE id=".$search_data);
+		//$result = mysql_query("SELECT id, title, content, color, fontSize, category, rotation, grad, gradColor, gradPosition FROM ".$table_notes." WHERE id=".$search_data);
+		$result = $wpdb->get_results("SELECT id, title, content, color, fontSize, category, rotation, grad, gradColor, gradPosition FROM ".$table_notes." WHERE id=".$search_data);
 
 
-		while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
-			$title = $row['title'];
-			$content = $row['content'];
-			$color = $row['color'];
-			$font = $row['fontSize'];
-			$rotation = $row['rotation'];
-			$category = $row['category'];
-			$note_id = $row['id'];
-			$grad = $row['grad'];
-			$color_grad = $row['gradColor'];
-			$grad_position = $row['gradPosition'];
+		foreach( $result as $row ) {
+		//while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+			$title = $row->title;
+			$content = $row->content;
+			$color = $row->color;
+			$font = $row->fontSize;
+			$rotation = $row->rotation;
+			$category = $row->category;
+			$note_id = $row->id;
+			$grad = $row->grad;
+			$color_grad = $row->gradColor;
+			$grad_position = $row->gradPosition;
 		} 
 
 		update_option('coderlol_last_mod_id', $note_id);
@@ -299,12 +300,13 @@ SUBPAGE 2 PREVIEW
 		$current_note_id = get_option('coderlol_last_mod_id');
 
 		//$sql = "SELECT date FROM ".$table_notes." WHERE id=".$note_id;
-		$result = mysql_query("SELECT `date`, updateDate FROM ".$table_notes." WHERE id=".$current_note_id);
+		//$result = mysql_query("SELECT `date`, updateDate FROM ".$table_notes." WHERE id=".$current_note_id);
+		$result = $wpdb->get_results("SELECT `date`, updateDate FROM ".$table_notes." WHERE id=".$current_note_id);
 
-
-		while ($row = mysql_fetch_array($result, MYSQL_ASSOC) ) {
-			$current_note_date_string = $row['date'];
-			$current_note_update_string = $row['updateDate'];
+		foreach( $result as $row ) {
+		//while ($row = mysql_fetch_array($result, MYSQL_ASSOC) ) {
+			$current_note_date_string = $row->date;
+			$current_note_update_string = $row->updateDate;
 			//echo $current_note_date_string;
 			$current_note_date_parsed = date_parse_from_format("Y-m-d", $current_note_date_string);
 			$current_note_update_parsed = date_parse_from_format("Y-m-d", $current_note_update_string);
@@ -646,7 +648,10 @@ function codrlol_ui_subpage_2()
 	global $wpdb;
 	$table_notes = $wpdb->prefix . "coderlol_notes";
 	//$result = mysql_query("SELECT title FROM wp_coderlol_notes");
-	$result = mysql_query("SELECT id, title, date FROM ".$table_notes." ORDER BY id DESC");
+	//$result = mysql_query("SELECT id, title, date FROM ".$table_notes." ORDER BY id DESC");
+	$result = $wpdb->get_results("SELECT id, title, date FROM ".$table_notes." ORDER BY id DESC")
+
+
 	
 ?>
 	<h2>Change a Note</h2>
@@ -657,12 +662,19 @@ function codrlol_ui_subpage_2()
 		<p>
 		<select id='coderlol_get_note' name='coderlol_get_note' type='text' class='coderlol-note-select-btn-settings' size="3">
 			<?php
+				/*
 				while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 
 					$note_title_value = $row['title']." ".date("d.m.Y", strtotime($row['date']));
 					
 					//echo $note_title_value;
 					echo("<option value='".$row['id']."'>".$note_title_value."</option>");
+				}
+				*/
+				foreach( $result as $row )
+				{
+					$note_title_value = $row->title." ".date("d.m.Y", strtotime($row->date));
+					echo("<option value='".$row->id."'>".$note_title_value."</option>");
 				}
 			?>
 		</select>
