@@ -1,6 +1,0 @@
-<?php
-/**
-  notes db loader
- */
-
-
