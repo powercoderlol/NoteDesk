@@ -38,6 +38,7 @@ require plugin_dir_path(__FILE__) . 'includes/class_note_desk.php';
 
 include 'includes/class_note_desk_db_loader.php';
 
+new note_desk();
 
 
 
