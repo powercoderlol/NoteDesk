@@ -1,24 +1,65 @@
 <?php
 /**
-  notes db loader
+ * Note class for database interactions using $wpdb
+ * @package NoteDesk
+ * @author Ivan Polyakov
+ * @since 1.0.0
  */
 
 require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-//global $wpdb;
 
 class note_desk_db_loader {
 
-	// class for database interactions in Wordpress way
+	/**
+	 * Current instance of db loader
+	 *
+	 * @since 1.0.0
+	 */
+	protected static $instance = NULL;
+
+	/**
+	 * Class member to access wpdb class
+	 *
+	 * @var wpdb
+	 * @since 1.0.0
+	 */
 	private $wpdb;
 
+
+	/**
+	 * Note Desk plugins tables prefix
+	 *
+	 * @var string
+	 * @since 1.0.0
+	 */
 	private $tables_prefix;
+
+
+
+	/**
+	 * Map of Note Desk plugin tables
+	 *
+	 * @var array
+	 * @since 1.0.0
+	 */
 	private $tables_array = array();
 
 
 	private $charset_collate;
 
-	// initialise wpdb instance
+
+	public static function get_instance() {
+		NULL === self::$instance and self::$instance = new self;
+		return self::$instance;
+	}
+
+	/**
+	 * Initialize wpdb instance as class member
+	 * Initialize strings to properly access to DB
+	 *
+	 * @since 1.0.0
+	 */
 	public function __construct() {
 		global $wpdb;
 		$this->wpdb = $wpdb;
@@ -31,48 +72,35 @@ class note_desk_db_loader {
 		$this->charset_collate = $this->wpdb->get_charset_collate();
 	}
 
+
+	/**
+	 * Create necessary tables to store notes and tables
+	 * for future archive
+	 *
+	 * @since 1.0.0
+	 */
 	public function create_tables() {
 		$this->create_desks_table();
 		$this->create_notes_table();
 	}
 
+	/**
+	 * Delete all created tables for plugin
+	 *
+	 * @since 1.0.0
+	 */
+	//TODO: ARCHIVATION FUNCTION
 	public function delete_tables() {
 		foreach($this->tables_array as $key => $value) {
 			$this->wpdb->query( 'DROP TABLE IF EXISTS ' . $this->tables_array[ $key ] );
 		}
 	}
 
-
-	public function archive_database() {
-		//TODO: ADD ARCHIVATION MECHANISM: json, csv, xls
-	}
-
-
-	public function load_desk_by_name( $desk_name ) {
-
-		$desks_table_name = $this->tables_array['desks'];
-		$notes_table_name = $this->tables_array['notes'];
-
-		$desk_id = $this->wpdb->get_results("SELECT desk_id FROM $desks_table_name WHERE desk_title = $desk_name");
-		$notes = $this->wpdb->get_results("SELECT * FROM $notes_table_name WHERE desk_id = $desk_id");
-
-		return $notes;
-	}
-
-	public function load_desk_by_id( $id ) {
-
-		$notes_table_name = $this->tables_array['notes'];
-		$notes = $this->wpdb->get_results("SELECT * FROM $notes_table_name WHERE desk_id = $id");
-
-		return $notes;
-	}
-
-	/*
-	private function load_desk_( $id ) {
-
-	}
-	*/
-
+	/**
+	 * Crete wp_note_desk_notes table
+	 *
+	 * @since 1.0.0
+	 */
 	private function create_notes_table() {
 
 		$table_name = $this->tables_array['notes'];
@@ -90,7 +118,11 @@ class note_desk_db_loader {
 
 		dbDelta( $sql );
 	}
-
+	/**
+	 * Crete wp_note_desk_desks table
+	 *
+	 * @since 1.0.0
+	 */
 	private function create_desks_table() {
 
 		$table_name = $this->tables_array['desks'];

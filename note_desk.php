@@ -24,7 +24,7 @@ if ( ! defined( 'NOTEDESK_ABSPATH' ) ) {
 
 require_once NOTEDESK_ABSPATH . 'includes/class_note_desk.php';
 
-add_action("plugins_loaded",
+add_action("init",
 	array(note_desk::get_instance(), "init"));
 
 

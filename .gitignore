@@ -1,3 +1,5 @@
 *.idea
 *.zip
 *.tar.gz
+*.bat
+*.sh
