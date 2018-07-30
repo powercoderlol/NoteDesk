@@ -1,31 +1,75 @@
 <?php
 
 /**
+ * Note Desk plugin bootstrap file
  *
- * @package     Note Desk
- * @since       0.0.1
+ * @link            http://vk.com/coderlol
+ * @since           1.0.0
+ * @package         Note Desk
  *
- * Plugin Name: Note Desk
- * Plugin URI: http://vk.com/coderlol
- * Description: Implementation of information desk
- * Version: 0.0.1
- * Author: coderlol
- * Author URI: http://vk.com/coderlol
-*/
-
-/**
- * https://semver.org
+ *
+ * @wordpress-plugin
+ * Plugin Name:     Note Desk
+ * Plugin URI:      http://vk.com/coderlol
+ * Description:     Implementation of note desk with custom style stickers
+ * Version:         1.0.0
+ * Author:          Ivan Polyakov
+ * Author URI:      http://vk.com/coderlol
+ * License:         GPL-2.0+
+ * License URI:     http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:     notedesk
+ * Domain Path:     /languages
  */
-define( 'NOTE_DESK_VERSION', '0.0.1' );
 
-if ( ! defined( 'NOTEDESK_ABSPATH' ) ) {
-	define( 'NOTEDESK_ABSPATH', plugin_dir_path( __FILE__ ) );
+
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+	die;
 }
 
-require_once NOTEDESK_ABSPATH . 'includes/class_note_desk.php';
 
-add_action("init",
-	array(note_desk::get_instance(), "init"));
+/**
+ * Note Desk plugin ABSPATH
+ * All includes have entry here
+ *
+ */
+if(!defined('NOTEDESK_ABSPATH')) {
+	define('NOTEDESK_ABSPATH', plugin_dir_path(__FILE__));
+}
+
+/**
+ * Currently notdesk version.
+ * Using SemVer https://semver.org
+ */
+define( 'NOTEDESK_VERSION', '1.0.0' );
 
 
 
+
+function activate_notedesk() {
+	require_once NOTEDESK_ABSPATH . 'includes/notedesk_activation_manager.php';
+	notedesk_activation_manager::activate();
+}
+
+function deactivate_notedesk() {
+	require_once NOTEDESK_ABSPATH . 'includes/notedesk_activation_manager.php';
+	notedesk_activation_manager::deactivate();
+}
+
+
+register_activation_hook(__FILE__, 'activate_notedesk');
+register_deactivation_hook(__FILE__, 'deactivate_notedesk');
+
+
+/**
+ * Core plugin class
+ */
+require_once plugin_dir_path(__FILE__) . 'includes/class_notedesk.php';
+
+
+function run_notedesk() {
+	$plugin = new notedesk();
+	$plugin->run();
+}
+
+run_notedesk();
