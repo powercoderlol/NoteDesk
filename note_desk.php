@@ -56,9 +56,16 @@ function deactivate_notedesk() {
 	notedesk_activation_manager::deactivate();
 }
 
+function uninstall_notedesk() {
+	require_once NOTEDESK_ABSPATH . 'includes/notedesk_activation_manager.php';
+	notedesk_activation_manager::uninstall();
+}
+
 
 register_activation_hook(__FILE__, 'activate_notedesk');
 register_deactivation_hook(__FILE__, 'deactivate_notedesk');
+register_uninstall_hook(__FILE__, 'uninstall_notedesk');
+
 
 
 /**
