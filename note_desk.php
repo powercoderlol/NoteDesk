@@ -797,7 +797,10 @@ function create_note_desk_template()
         }
     }
     
-
+    if($next_counter == 1)
+    {
+        $template = $template. '</div>';
+    }
     $template = $template. '</div></div>';
 
     /**
