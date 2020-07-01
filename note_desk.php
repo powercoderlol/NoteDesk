@@ -189,6 +189,8 @@ function coderlol_option_subpage_1()
         $coderlol_desk_title_grad = $_POST['grad_desk_title'];
         if ($coderlol_desk_title_grad == 'on') { $coderlol_desk_title_grad='1'; } else { $coderlol_desk_title_grad = '0'; }
 
+        $coderlol_hide_header = $_POST['coderlol_hide_header'];
+        if ($coderlol_hide_header == 'on') { $coderlol_hide_header = '1'; } else { $coderlol_hide_header = '0'; }
 
 
         update_option('coderlol_desk_title', $coderlol_desk_title_var);
@@ -205,6 +207,8 @@ function coderlol_option_subpage_1()
 
         update_option('grad_desk', $coderlol_desk_grad);
         update_option('grad_desk_title', $coderlol_desk_title_grad);
+
+        update_option('coderlol_hide_header', $coderlol_hide_header);
 
 
         $note_desk_template = create_note_desk_template();
@@ -548,6 +552,7 @@ function coderlol_ui_subpage_1()
     $coderlol_desk_color_grad = get_option('coderlol_desk_color_grad');
     $coderlol_desk_grad = get_option('grad_desk');
     $coderlol_desk_title_grad = get_option('grad_desk_title');
+    $coderlol_hide_header = get_option('coderlol_hide_header');
 
 ?>
     <h2>Desk Settings</h2>
@@ -557,6 +562,10 @@ function coderlol_ui_subpage_1()
             <p>                 
                 <input value=<?php echo "'".$coderlol_desk_title_var."'" ?> id='coderlol_desk_title' name='coderlol_desk_title' style='width: 100%;' type='text'>
             </p>
+        <p>
+            <input id='coderlol_hide_header' name='coderlol_hide_header' type="checkbox" <?php if ($coderlol_hide_header=='1') echo "checked"; ?> >
+            Скрыть заголовок
+        </p>
         <label><h3>Фоновое изображение заголовка доски:</h3></label>
         <label><h4>Текущее изображение: </h4></label>
         <p id="current_title_image">
@@ -703,7 +712,7 @@ function create_note_desk_template()
     global $wpdb;
 
 
-
+  
 
 
     $coderlol_box_title = get_option('coderlol_desk_title');
@@ -718,6 +727,7 @@ function create_note_desk_template()
     $coderlol_desk_color_grad = "#".get_option('coderlol_desk_color_grad');
     $coderlol_desk_grad = get_option('grad_desk');
     $coderlol_desk_title_grad = get_option('grad_desk_title');
+    $coderlol_hide_header = get_option('coderlol_hide_header');
 
     $curr_title_style = "";
     $curr_desk_style = "";
@@ -760,8 +770,12 @@ function create_note_desk_template()
 
 
 /************************************GENERATOR*********************************************/
-
-    $template = $temp.'<div class="coderlol-note-box"><div class="coderlol-note-box-title" style="'.$curr_title_style.'"><div class="coderlol-new-title-box">' . $coderlol_box_title . '</div></div><div class="coderlol-note-box-content" style="'.$curr_desk_style.'">';
+    
+    $template = $temp.'<div class="coderlol-note-box">';
+    if($coderlol_hide_header == '0') {
+    $template = $template.'<div class="coderlol-note-box-title" style="'.$curr_title_style.'"><div class="coderlol-new-title-box">' . $coderlol_box_title . '</div></div>';
+    }
+    $template = $template.'<div class="coderlol-note-box-content" style="'.$curr_desk_style.'">';
 
 
     $table_notes = $wpdb->prefix . "coderlol_notes";
@@ -1123,6 +1137,9 @@ function coderlol_install() {
 
     add_option('coderlol_desk_title_color_grad', 'FFFFFF');
     add_option('coderlol_desk_color_grad', 'FFFFFF');
+
+    // Option to hide NoteDesk header
+    add_option('coderlol_hide_header', '0');
 
 
     $my_id = 1775;
