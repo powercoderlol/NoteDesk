@@ -5,7 +5,21 @@ require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 class notedesk_db_loader {
 
        private static $nd_prefix = 'cd_note_desk_';
-       private static $tables_list = ['desks', 'notes', 'category'];
+       private static $tables_list = ['desks', 'notes'];
+
+       public static function load_one_note(int $note_id) {
+              global $wpdb;
+              $notes_table_name = $wpdb->prefix . self::$nd_prefix . 'notes';
+              $load_note_sql = 'SELECT note_title, short_description, note_content, note_category, create_date, update_date FROM ' . $notes_table_name . ' WHERE note_id='. $note_id .";";
+              $result = $wpdb->get_row($sql, ARRAY_A);
+              if(null == $result)
+                     $result = [];
+              return $result;
+       }
+
+       public static function load_desk(int $desk_id) {
+              // Select all notes where desk_id == $desk_id
+       }
 
        public static function create_tables() {
               self::create_notedesk_tables();

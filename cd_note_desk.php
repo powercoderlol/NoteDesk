@@ -74,10 +74,7 @@ register_uninstall_hook(__FILE__, 'uninstall_notedesk');
 require_once plugin_dir_path(__FILE__) . 'includes/class_notedesk.php';
 
 
-function run_notedesk() {
-    if(class_exists('notedesk')) {
-        $plugin = new notedesk();
-    }
+if(class_exists('notedesk')) {
+    $notedesk = new notedesk();
+    $notedesk->activate();
 }
-
-run_notedesk();
