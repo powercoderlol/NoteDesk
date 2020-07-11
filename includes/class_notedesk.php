@@ -7,13 +7,6 @@
  */
 
 class notedesk {
-
-	public function __construct() {
-
-	}
-
-	public function run() {
-
-	}
-
+    public function __construct() {
+    }
 }
